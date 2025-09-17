@@ -1,0 +1,25 @@
+{
+	// List of extensions which should be recommended for developers when a workspace is opened for the first time.
+	// See https://go.microsoft.com/fwlink/?LinkId=827846 to learn about workspace recommendations.
+	"recommendations": [
+		"ms-python.python",
+		"charliermarsh.ruff",
+        "codezombiech.gitignore",
+        "eamodio.gitlens",
+        "exiasr.hadolint",
+        "kevinrose.vsc-python-indent",
+        "mosapride.zenkaku",
+        "ms-azuretools.vscode-docker",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-vscode-remote.remote-containers",
+        "njpwerner.autodocstring",
+        "oderwat.indent-rainbow",
+        "pkief.material-icon-theme",
+        "redhat.vscode-yaml",
+        "shardulm94.trailing-spaces",
+        "tamasfe.even-better-toml",
+        "usernamehw.errorlens",
+        "yzhang.markdown-all-in-one"
+	],
+}

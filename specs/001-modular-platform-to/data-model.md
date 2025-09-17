@@ -97,12 +97,12 @@ Relational schema centered on Service registration, routing, certificates, healt
 - category_trend derived daily from service states.
 
 ## State Transition Rules
-Onboarding → Healthy (first successful all checks)  
-Onboarding → OnboardingFailed (timeout or health failure after retry)  
-Healthy → Degraded (latency p95 > threshold or error_rate > threshold sustained window)  
-Degraded → Failed (continued degradation threshold breach)  
-Failed → Healthy (recovery window stable)  
-Any Active → Retired (decommission)  
+Onboarding → Healthy (first successful all checks)
+Onboarding → OnboardingFailed (timeout or health failure after retry)
+Healthy → Degraded (latency p95 > threshold or error_rate > threshold sustained window)
+Degraded → Failed (continued degradation threshold breach)
+Failed → Healthy (recovery window stable)
+Any Active → Retired (decommission)
 
 ## Validation Constraints
 - primary_domain unique; conflict detection pre-insert preview.

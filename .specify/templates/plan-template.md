@@ -31,30 +31,23 @@
 - Phase 3-4: Implementation execution (manual or via tools)
 
 ## Summary
-Primary objective: Provide a secure, modular, single-host (or small-cluster) multi-service container platform with unified TLS edge, dynamic domain-based routing, standardized onboarding (<10 min SLA), observability, auditability, and a status/dashboard surface. Technical approach (initial, subject to research validation): Leverage a single reverse-proxy/gateway layer terminating TLS, internal dynamic router reading service metadata (labels/manifests), metadata-driven registration workflow producing routing + certificate configuration, centralized health aggregation refreshed ≤60s, and read-only dashboard plus JSON status feed.
+[Extract from feature spec: primary requirement + technical approach from research]
 
 ## Technical Context
-**Language/Version**: Likely Docker Compose orchestrated services + supplemental scripting (Bash + optional Python 3.11 for tooling) (Finalize in Phase 0).
-**Primary Dependencies**: Reverse proxy & dynamic router (gateway + internal label-based router); certificate tooling (self-signed gen + import path); health check & metrics aggregator component; static dashboard (vanilla HTML/CSS/JS).
-**Storage**: PostgreSQL for persistent metadata (services, routing rules, audit events, certificates metadata, category trends); flat files for certificates; optional object storage for archives.
-**Testing**: Container-level integration (pytest or shell-based harness), contract tests (OpenAPI schema validation), dashboard smoke tests (Playwright or lightweight curl/HTML assertions).
-**Target Platform**: Linux host (single) or minimal cluster (≤3 nodes) with Docker runtime.
-**Project Type**: single (Option 1) – monorepo with service definitions and supporting scripts.
-**Performance Goals**: Routing latency p95 ≤250ms under baseline load; onboarding 95% ≤10 min (median ≤5); dashboard refresh interval ≤60s; health aggregation CPU overhead <5%.
-**Constraints**: No direct container host port exposure; fair-share throttle when CPU >80% sustained 5 min; certificate warnings at 30/7/1/<1d; domain propagation ≤5 min typical (≤10 min cap).
-**Scale/Scope**: Target dozens (≤100) heterogeneous services; service categories ~7 functional groups; audit retention 180 days hot.
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [single/web/mobile - determines source structure]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-Constitution is placeholder (principle slots not yet instantiated). Interim interpretation:
-1. Principle 1 (Library-First placeholder): Provide modular separation where feasible (metadata library, health aggregation library) but avoid premature fragmentation on initial delivery → PASS (no violation; single structure kept).
-2. Principle 2 (CLI Interface placeholder): All automation (onboarding, status export, certificate rotation) will expose CLI entry points (stdout JSON support) → PASS.
-3. Principle 3 (Test-First placeholder): Commit to TDD for contract tests & onboarding validation scripts; tasks will reflect pre-implementation failing tests → PASS contingent on Phase 2 tasks.
-4. Principle 4 (Integration Testing placeholder): Routing & certificate renewal flows earmarked for integration test suite → PASS.
-5. Principle 5 (Observability/Simplicity placeholder): Minimal initial components; avoid multi-proxy layering; structured log output (JSON lines) for audit & events → PASS.
-
-No complexity deviations yet (single project structure retained). Re-evaluate post Phase 1 design when contracts enumerated.
+[Gates determined based on constitution file]
 
 ## Project Structure
 
@@ -106,7 +99,7 @@ ios/ or android/
 └── [platform-specific structure]
 ```
 
-**Structure Decision**: Option 1 (Single project). Rationale: Primarily infrastructure + metadata + dashboard; splitting into backend/frontend repos or directories unnecessary until complexity increases (threshold: >1 dedicated API service or JS framework adoption).
+**Structure Decision**: [DEFAULT to Option 1 unless Technical Context indicates web/mobile app]
 
 ## Phase 0: Outline & Research
 1. **Extract unknowns from Technical Context** above:
@@ -127,7 +120,7 @@ ios/ or android/
    - Rationale: [why chosen]
    - Alternatives considered: [what else evaluated]
 
-**Output**: research.md with all NEEDS CLARIFICATION resolved (expected none outstanding—focus on selecting concrete tooling: language for orchestration scripts, test harness frameworks, audit storage schema, certificate generation approach, health aggregation mechanism).
+**Output**: research.md with all NEEDS CLARIFICATION resolved
 
 ## Phase 1: Design & Contracts
 *Prerequisites: research.md complete*
@@ -161,19 +154,6 @@ ios/ or android/
 
 **Output**: data-model.md, /contracts/*, failing tests, quickstart.md, agent-specific file
 
-Preliminary Contract Candidates (from FRs & Scenarios) – to refine in Phase 1:
-- Register Service (POST /services)
-- Update Service Metadata (PATCH /services/{id})
-- Decommission Service (POST /services/{id}/decommission)
-- List Services (GET /services?status=&category=)
-- Get Service (GET /services/{id})
-- Health Status Feed (GET /status/services.json)
-- Domain Reassignment (POST /services/{id}/domain)
-- Certificate Info (GET /services/{id}/certificate)
-- Preview Routing (POST /routing/preview)
-- Audit Events (GET /audit?service_id=)
-- Category Trends (GET /analytics/categories/daily)
-
 ## Phase 2: Task Planning Approach
 *This section describes what the /tasks command will do - DO NOT execute during /plan*
 
@@ -181,51 +161,51 @@ Preliminary Contract Candidates (from FRs & Scenarios) – to refine in Phase 1:
 - Load `.specify/templates/tasks-template.md` as base
 - Generate tasks from Phase 1 design docs (contracts, data model, quickstart)
 - Each contract → contract test task [P]
-- Each entity → model creation task [P]
+- Each entity → model creation task [P] 
 - Each user story → integration test task
 - Implementation tasks to make tests pass
 
 **Ordering Strategy**:
-- TDD order: Tests before implementation
+- TDD order: Tests before implementation 
 - Dependency order: Models before services before UI
 - Mark [P] for parallel execution (independent files)
 
-**Estimated Output**: 35-40 numbered, ordered tasks (increase due to added dashboard, trends analytics, certificate lifecycle automation, throttle policy tests).
-
-**Additional Phase 2 Notes (Descriptive Only)**:
-- Parallelizable groups [P]: Contract test scaffolds, entity migration DDL files, dashboard static asset skeleton, health aggregation polling script baseline.
-- Sequential dependencies: Data migrations before contract tests referencing schema; certificate lifecycle script before expiry warning tests; throttling policy config before load-simulation tests.
-- Risk items flagged for early inclusion: domain collision preview logic & certificate overlap rotation (reduce late integration surprises).
+**Estimated Output**: 25-30 numbered, ordered tasks in tasks.md
 
 **IMPORTANT**: This phase is executed by the /tasks command, NOT by /plan
 
 ## Phase 3+: Future Implementation
 *These phases are beyond the scope of the /plan command*
 
-**Phase 3**: Task execution (/tasks command creates tasks.md)
-**Phase 4**: Implementation (execute tasks.md following constitutional principles)
+**Phase 3**: Task execution (/tasks command creates tasks.md)  
+**Phase 4**: Implementation (execute tasks.md following constitutional principles)  
 **Phase 5**: Validation (run tests, execute quickstart.md, performance validation)
 
 ## Complexity Tracking
-No active violations; table unused.
+*Fill ONLY if Constitution Check has violations that must be justified*
+
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
 
 
 ## Progress Tracking
 *This checklist is updated during execution flow*
 
 **Phase Status**:
-- [x] Phase 0: Research complete (/plan command)
-- [x] Phase 1: Design complete (/plan command)
+- [ ] Phase 0: Research complete (/plan command)
+- [ ] Phase 1: Design complete (/plan command)
 - [ ] Phase 2: Task planning complete (/plan command - describe approach only)
 - [ ] Phase 3: Tasks generated (/tasks command)
 - [ ] Phase 4: Implementation complete
 - [ ] Phase 5: Validation passed
 
 **Gate Status**:
-- [x] Initial Constitution Check: PASS
-- [x] Post-Design Constitution Check: PASS (no new deviations introduced by contracts/data model)
-- [x] All NEEDS CLARIFICATION resolved
-- [ ] Complexity deviations documented (none yet)
+- [ ] Initial Constitution Check: PASS
+- [ ] Post-Design Constitution Check: PASS
+- [ ] All NEEDS CLARIFICATION resolved
+- [ ] Complexity deviations documented
 
 ---
 *Based on Constitution v2.1.1 - See `/memory/constitution.md`*
