@@ -1,0 +1,154 @@
+openapi: 3.1.0
+info:
+  title: Modular Multi-Service Platform API
+  version: 0.1.0-draft
+servers:
+  - url: https://example.local/api
+paths:
+  /services:
+    get:
+      summary: List services
+      parameters:
+        - in: query
+          name: status
+          schema: { type: string }
+        - in: query
+          name: category
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+    post:
+      summary: Register service
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceRegistration'
+      responses:
+        '201': { description: Created }
+  /services/{id}:
+    get:
+      summary: Get service by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+        '404': { description: Not Found }
+    patch:
+      summary: Update service metadata
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ServiceUpdate'
+      responses:
+        '200': { description: Updated }
+  /services/{id}/decommission:
+    post:
+      summary: Decommission service
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '202': { description: Decommission initiated }
+  /services/{id}/domain:
+    post:
+      summary: Reassign primary domain
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string, format: uuid }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [primary_domain]
+              properties:
+                primary_domain: { type: string }
+      responses:
+        '200': { description: Domain updated }
+        '409': { description: Conflict }
+  /routing/preview:
+    post:
+      summary: Preview routing configuration changes
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                proposed_rules:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      domain: { type: string }
+                      path_pattern: { type: string }
+                      service_id: { type: string }
+      responses:
+        '200': { description: Preview OK }
+  /status/services.json:
+    get:
+      summary: Machine-readable status feed
+      responses:
+        '200': { description: OK }
+  /audit:
+    get:
+      summary: List audit events
+      parameters:
+        - in: query
+          name: service_id
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+  /analytics/categories/daily:
+    get:
+      summary: Category trend snapshots
+      responses:
+        '200': { description: OK }
+components:
+  schemas:
+    ServiceRegistration:
+      type: object
+      required: [service_name, owner_contact, primary_domain, container_image_ref, business_purpose, support_channel, compliance_tier, requested_cert_type, health_check_path, category]
+      properties:
+        service_name: { type: string }
+        owner_contact: { type: string }
+        primary_domain: { type: string }
+        container_image_ref: { type: string }
+        business_purpose: { type: string }
+        support_channel: { type: string }
+        compliance_tier: { type: string }
+        requested_cert_type: { type: string, enum: [self-signed, external] }
+        health_check_path: { type: string }
+        category: { type: string }
+        service_config_refs:
+          type: array
+          items: { type: string }
+    ServiceUpdate:
+      type: object
+      properties:
+        owner_contact: { type: string }
+        business_purpose: { type: string }
+        support_channel: { type: string }
+        health_check_path: { type: string }
+        category: { type: string }
+        service_config_refs:
+          type: array
+          items: { type: string }
