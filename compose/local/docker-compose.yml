@@ -31,6 +31,7 @@ services:
       - traefik.http.routers.api.rule=Host(`traefik.local`)
       - traefik.http.routers.api.entrypoints=websecure
       - traefik.http.routers.api.tls=true
+      - traefik.http.routers.api.middlewares=security-headers@file,compress@file,local-only@file
       - traefik.http.services.api.loadbalancer.server.port=8080
 
   homepage:
@@ -94,6 +95,9 @@ services:
     #           driver: nvidia
     environment:
       - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_ORIGINS=*
+      - OLLAMA_KEEP_ALIVE=5m
+      - OLLAMA_NUM_PARALLEL=1
     volumes:
       - ollama-data:/root/.ollama
     labels:
@@ -101,7 +105,11 @@ services:
       - traefik.http.routers.ollama.rule=Host(`ollama.local`)
       - traefik.http.routers.ollama.entrypoints=websecure
       - traefik.http.routers.ollama.tls=true
+      - traefik.http.routers.ollama.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
       - traefik.http.services.ollama.loadbalancer.server.port=11434
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
   openwebui:
     image: ghcr.io/open-webui/open-webui:cuda
@@ -109,12 +117,21 @@ services:
       - ollama
     environment:
       - OLLAMA_BASE_URL=http://ollama:11434
+      - WEBUI_NAME=Open WebUI (Local)
+      - AUDIO_INPUT_ALLOWED=false
+      - AUDIO_OUTPUT_ALLOWED=false
+      - ENABLE_OPENAI_API=false
+      - ENABLE_TELEMETRY=false
     labels:
       - traefik.enable=true
       - traefik.http.routers.openwebui.rule=Host(`openwebui.local`)
       - traefik.http.routers.openwebui.entrypoints=websecure
       - traefik.http.routers.openwebui.tls=true
+      - traefik.http.routers.openwebui.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
       - traefik.http.services.openwebui.loadbalancer.server.port=8080
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
 networks:
   default:
