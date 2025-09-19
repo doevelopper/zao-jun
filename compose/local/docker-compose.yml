@@ -83,6 +83,42 @@ services:
       - traefik.http.routers.hc.tls=true
       - traefik.http.services.hc.loadbalancer.server.port=8000
 
+  ollama:
+    image: ollama/ollama:latest
+    # Uncomment the following lines if you have NVIDIA drivers and want GPU acceleration
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - capabilities: [gpu]
+    #           driver: nvidia
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    volumes:
+      - ollama-data:/root/.ollama
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.ollama.rule=Host(`ollama.local`)
+      - traefik.http.routers.ollama.entrypoints=websecure
+      - traefik.http.routers.ollama.tls=true
+      - traefik.http.services.ollama.loadbalancer.server.port=11434
+
+  openwebui:
+    image: ghcr.io/open-webui/open-webui:cuda
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.openwebui.rule=Host(`openwebui.local`)
+      - traefik.http.routers.openwebui.entrypoints=websecure
+      - traefik.http.routers.openwebui.tls=true
+      - traefik.http.services.openwebui.loadbalancer.server.port=8080
+
 networks:
   default:
     name: zaojun
+
+volumes:
+  ollama-data:

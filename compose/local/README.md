@@ -9,7 +9,7 @@ This is a minimal local docker-compose stack to try the single-entry approach us
 Add entries to /etc/hosts:
 
 ```
-127.0.0.1  home.local traefik.local whoami.local nginx.local fider.local hc.local
+127.0.0.1  home.local traefik.local whoami.local nginx.local fider.local hc.local ollama.local openwebui.local
 ```
 
 Optional: add more from your catalog, e.g. `grafana.local`, `n8n.local`, etc.
@@ -27,8 +27,12 @@ docker compose up -d
 - NGINX: https://nginx.local
 - Fider: https://fider.local
 - Healthchecks: https://hc.local
+- Ollama API: https://ollama.local
+- Open WebUI: https://openwebui.local
 
 Note: Certificates are self-signed. Your browser will show a warning unless you trust them. For trusted local certs, consider mkcert, or wire real certificates.
+
+GPU note: The provided Open WebUI image tag is `:cuda` and supports GPU acceleration with Ollama if your host has NVIDIA drivers and Docker GPU support. You may need to uncomment the `deploy.resources.reservations.devices` block in `docker-compose.yml` under `ollama` or run Docker with `--gpus all`.
 
 ## Use generated homepage
 You can replace the placeholder content with your generated homepage:
