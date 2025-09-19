@@ -1,0 +1,19 @@
+# Traefik dynamic TLS configuration for local self-signed certs
+# This uses the default Traefik generated self-signed cert for demo purposes.
+# For real local trust, consider mkcert to generate trusted dev certs for *.local.
+
+http:
+  middlewares:
+    security-headers:
+      headers:
+        stsSeconds: 31536000
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        contentTypeNosniff: true
+        browserXssFilter: true
+        frameDeny: true
+
+  routers:
+    # Redirect http to https is handled at entrypoint level above
+    
+  services: {}

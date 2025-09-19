@@ -1,0 +1,88 @@
+version: "3.9"
+
+# Minimal local stack to demo the single-entry homepage with Traefik.
+# Uses self-signed TLS for *.local.
+
+name: zaojun-local
+
+services:
+  traefik:
+    image: traefik:v3.1
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.file.directory=/etc/traefik/dynamic
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls=true
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --log.level=INFO
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/dynamic:/etc/traefik/dynamic:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.api.rule=Host(`traefik.local`)
+      - traefik.http.routers.api.entrypoints=websecure
+      - traefik.http.routers.api.tls=true
+      - traefik.http.services.api.loadbalancer.server.port=8080
+
+  homepage:
+    image: nginx:alpine
+    volumes:
+      - ./homepage:/usr/share/nginx/html:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.home.rule=Host(`home.local`)
+      - traefik.http.routers.home.entrypoints=websecure
+      - traefik.http.routers.home.tls=true
+      - traefik.http.services.home.loadbalancer.server.port=80
+
+  whoami:
+    image: traefik/whoami:latest
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.whoami.rule=Host(`whoami.local`)
+      - traefik.http.routers.whoami.entrypoints=websecure
+      - traefik.http.routers.whoami.tls=true
+
+  nginx:
+    image: nginx:alpine
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.nginx.rule=Host(`nginx.local`)
+      - traefik.http.routers.nginx.entrypoints=websecure
+      - traefik.http.routers.nginx.tls=true
+      - traefik.http.services.nginx.loadbalancer.server.port=80
+
+  fider:
+    image: getfider/fider:stable
+    environment:
+      - SITE_URL=https://fider.local
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.fider.rule=Host(`fider.local`)
+      - traefik.http.routers.fider.entrypoints=websecure
+      - traefik.http.routers.fider.tls=true
+      - traefik.http.services.fider.loadbalancer.server.port=3000
+
+  healthchecks:
+    image: healthchecks/healthchecks:latest
+    environment:
+      - DEBUG=True
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hc.rule=Host(`hc.local`)
+      - traefik.http.routers.hc.entrypoints=websecure
+      - traefik.http.routers.hc.tls=true
+      - traefik.http.services.hc.loadbalancer.server.port=8000
+
+networks:
+  default:
+    name: zaojun
