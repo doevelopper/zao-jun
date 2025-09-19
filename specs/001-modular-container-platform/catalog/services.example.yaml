@@ -1,0 +1,9 @@
+# Example Service catalog entry
+name: homepage
+domain: core
+routes:
+  - rule: Host(`home.local`) && PathPrefix(`/`)
+health: healthy
+visibility: public
+metadata:
+  owner: platform-team

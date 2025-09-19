@@ -1,0 +1,6 @@
+# Example Domain catalog entry
+name: core
+description: Core platform services
+accessGroups:
+  - platform-admins
+  - platform-operators
