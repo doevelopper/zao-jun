@@ -1,0 +1,14 @@
+[
+  {
+    "name": "core",
+    "services": [
+      {
+        "name": "homepage",
+        "status": "healthy",
+        "visibility": "public",
+        "link": "https://home.local/",
+        "link_enabled": true
+      }
+    ]
+  }
+]
