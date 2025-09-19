@@ -34,6 +34,13 @@ Note: Certificates are self-signed. Your browser will show a warning unless you 
 
 GPU note: The provided Open WebUI image tag is `:cuda` and supports GPU acceleration with Ollama if your host has NVIDIA drivers and Docker GPU support. You may need to uncomment the `deploy.resources.reservations.devices` block in `docker-compose.yml` under `ollama` or run Docker with `--gpus all`.
 
+## Data directories
+
+- Ollama models/cache: `compose/local/data/ollama`
+- Open WebUI data: `compose/local/data/openwebui`
+
+Note: Models can be large (several GB); ensure you have available disk. These paths are git-ignored.
+
 ## Use generated homepage
 You can replace the placeholder content with your generated homepage:
 
