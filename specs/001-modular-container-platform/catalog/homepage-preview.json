@@ -8,10 +8,106 @@
         "visibility": "public",
         "link": "https://home.local/",
         "link_enabled": true
+      },
+      {
+        "name": "traefik",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://traefik.local/",
+        "link_enabled": true
       }
     ],
     "color": "#22c55e",
     "icon": "\ud83e\udded",
+    "logo": null
+  },
+  {
+    "name": "ops",
+    "services": [
+      {
+        "name": "watchtower",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://watchtower.local/",
+        "link_enabled": true
+      }
+    ],
+    "color": "#f59e0b",
+    "icon": "\u2699\ufe0f",
+    "logo": null
+  },
+  {
+    "name": "tools",
+    "services": [
+      {
+        "name": "whoami",
+        "status": "healthy",
+        "visibility": "public",
+        "link": "https://whoami.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "nginx",
+        "status": "healthy",
+        "visibility": "public",
+        "link": "https://nginx.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "curl",
+        "status": "healthy",
+        "visibility": "public",
+        "link": "https://curl.local/",
+        "link_enabled": true
+      }
+    ],
+    "color": "#3b82f6",
+    "icon": "\ud83e\uddf0",
+    "logo": null
+  },
+  {
+    "name": "mail",
+    "services": [
+      {
+        "name": "docker-mailserver",
+        "status": "degraded",
+        "visibility": "restricted",
+        "link": "https://mail.local/",
+        "link_enabled": false
+      }
+    ],
+    "color": "#ef4444",
+    "icon": "\u2709\ufe0f",
+    "logo": null
+  },
+  {
+    "name": "apps",
+    "services": [
+      {
+        "name": "fider",
+        "status": "healthy",
+        "visibility": "public",
+        "link": "https://fider.local/",
+        "link_enabled": true
+      }
+    ],
+    "color": "#a855f7",
+    "icon": "\ud83e\udde9",
+    "logo": null
+  },
+  {
+    "name": "monitoring",
+    "services": [
+      {
+        "name": "healthchecks",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://hc.local/",
+        "link_enabled": true
+      }
+    ],
+    "color": "#06b6d4",
+    "icon": "\ud83d\udcc8",
     "logo": null
   }
 ]

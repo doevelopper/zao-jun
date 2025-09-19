@@ -1,8 +1,51 @@
-# Example Domain catalog entry
-name: core
-description: Core platform services
-accessGroups:
-  - platform-admins
-  - platform-operators
-color: "#22c55e"
-icon: "🧭"
+# Example Domain catalog entries
+- name: core
+  description: Core platform services
+  accessGroups:
+    - platform-admins
+    - platform-operators
+  color: "#22c55e"
+  icon: "🧭"
+
+- name: ops
+  description: Operations & automation
+  accessGroups:
+    - platform-admins
+    - platform-operators
+  color: "#f59e0b"
+  icon: "⚙️"
+
+- name: tools
+  description: Developer tools
+  accessGroups:
+    - platform-admins
+    - platform-operators
+    - developers
+  color: "#3b82f6"
+  icon: "🧰"
+
+- name: mail
+  description: Mail platform
+  accessGroups:
+    - platform-admins
+    - platform-operators
+    - mail-admins
+  color: "#ef4444"
+  icon: "✉️"
+
+- name: apps
+  description: Applications
+  accessGroups:
+    - platform-admins
+    - platform-operators
+    - developers
+  color: "#a855f7"
+  icon: "🧩"
+
+- name: monitoring
+  description: Monitoring and health
+  accessGroups:
+    - platform-admins
+    - platform-operators
+  color: "#06b6d4"
+  icon: "📈"

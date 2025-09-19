@@ -1,14 +1,126 @@
-# Example Service catalog entry
-name: homepage
-domain: core
-routes:
-  - rule: Host(`home.local`) && PathPrefix(`/`)
-health: healthy
-visibility: public
-metadata:
-  owner: platform-team
-  cert_env: dev
-  cert_type: self-signed
-  cert_valid: "true"
-  cert_chain_complete: "true"
-  cert_expired: "false"
+# Example Service catalog entries
+- name: homepage
+  domain: core
+  routes:
+    - rule: Host(`home.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: public
+  metadata:
+    owner: platform-team
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: traefik
+  domain: core
+  routes:
+    - rule: Host(`traefik.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: platform-team
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: whoami
+  domain: tools
+  routes:
+    - rule: Host(`whoami.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: public
+  metadata:
+    owner: platform-team
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: nginx
+  domain: tools
+  routes:
+    - rule: Host(`nginx.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: public
+  metadata:
+    owner: platform-team
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: watchtower
+  domain: ops
+  routes:
+    - rule: Host(`watchtower.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: platform-team
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: curl
+  domain: tools
+  routes:
+    - rule: Host(`curl.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: public
+  metadata:
+    owner: platform-team
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: docker-mailserver
+  domain: mail
+  routes:
+    - rule: Host(`mail.local`) && PathPrefix(`/`)
+  health: degraded
+  visibility: restricted
+  metadata:
+    owner: mail-admins
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: fider
+  domain: apps
+  routes:
+    - rule: Host(`fider.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: public
+  metadata:
+    owner: product
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: healthchecks
+  domain: monitoring
+  routes:
+    - rule: Host(`hc.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: sre
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
