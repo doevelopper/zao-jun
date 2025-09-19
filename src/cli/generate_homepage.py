@@ -15,9 +15,10 @@ def render_html(preview: list[dict]) -> str:
             "degraded": "#f59e0b",
             "unavailable": "#ef4444",
         }.get(status, "#9ca3af")
+        tooltip = "" if enabled else " title=\"Unavailable: service is not healthy\""
         link_html = (
             f'<a href="{escape(link)}" class="btn" style="opacity:{1.0 if enabled else 0.5}" ' \
-            f'{"" if enabled else "aria-disabled=\"true\" tabindex=\"-1\""}>' \
+            f'{"" if enabled else "aria-disabled=\"true\" tabindex=\"-1\""}{tooltip}>' \
             f"Open</a>" if link else ""
         )
         return f"""
@@ -36,10 +37,15 @@ def render_html(preview: list[dict]) -> str:
     for d in preview:
         domain_name = escape(d.get("name", ""))
         services = d.get("services", [])
+        accent = d.get("color") or "#3b82f6"
+        icon = escape(d.get("icon", ""))
+        logo = d.get("logo")
         services_html = "\n".join(card(s) for s in services)
+        logo_html = f'<img src="{escape(logo)}" alt="{domain_name} logo" class="logo">' if logo else ""
+        icon_html = f'<span class=icon>{icon}</span>' if icon else ""
         domains_html.append(f"""
         <section class=domain>
-          <h2>{domain_name}</h2>
+          <h2 style=\"--accent:{accent}\">{icon_html}{logo_html}{domain_name}</h2>
           <div class=grid>
             {services_html}
           </div>
@@ -61,14 +67,18 @@ def render_html(preview: list[dict]) -> str:
     header {{ padding:24px 32px; border-bottom:1px solid #1f2937; position:sticky; top:0; background:rgba(11,16,32,.9); backdrop-filter: blur(6px); }}
     h1 {{ margin:0; font-size:20px; letter-spacing:.02em; }}
     main {{ padding:24px 32px; max-width:1200px; margin:0 auto; }}
-    h2 {{ margin:24px 0 12px; font-size:16px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }}
+    h2 {{ margin:24px 0 12px; font-size:16px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; display:flex; align-items:center; gap:10px; }}
+    h2::after {{ content:""; flex:1; height:1px; background:linear-gradient(90deg, var(--accent, #334155), transparent); margin-left:10px; }}
     .grid {{ display:grid; grid-template-columns: var(--grid); gap:16px; }}
-    .card {{ background:var(--card); border:1px solid #1f2937; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }}
+    .card {{ background:var(--card); border:1px solid #1f2937; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; box-shadow:0 6px 24px rgba(0,0,0,.25); }}
     .card-header {{ display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #1f2937; }}
     .name {{ font-weight:600; }}
     .badge {{ color:#0b1020; font-size:12px; padding:2px 8px; border-radius:999px; text-transform:capitalize; }}
     .card-body {{ padding:12px 14px; }}
-    .btn {{ display:inline-block; background:#2563eb; color:white; text-decoration:none; padding:8px 10px; border-radius:8px; font-weight:600; }}
+    .btn {{ display:inline-block; background:#2563eb; color:white; text-decoration:none; padding:8px 10px; border-radius:8px; font-weight:600; transition:transform .12s ease, box-shadow .12s ease; }}
+    .btn:hover {{ transform: translateY(-1px); box-shadow:0 6px 20px rgba(37,99,235,.25); }}
+    .icon {{ font-size:18px; }}
+    .logo {{ height:18px; width:auto; display:inline-block; filter:contrast(1.1) saturate(1.1); }}
     footer {{ padding:24px 32px; color:var(--muted); border-top:1px solid #1f2937; margin-top:24px; }}
   </style>
 </head>

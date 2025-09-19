@@ -4,3 +4,5 @@ description: Core platform services
 accessGroups:
   - platform-admins
   - platform-operators
+color: "#22c55e"
+icon: "🧭"

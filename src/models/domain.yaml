@@ -18,3 +18,12 @@ properties:
     items:
       type: string
     description: Authorization groups with access to this domain
+  color:
+    type: string
+    description: Optional hex color for UI accent (e.g., #22c55e)
+  icon:
+    type: string
+    description: Optional icon/emoji to display with the domain title
+  logo:
+    type: string
+    description: Optional logo URL/path to display with the domain title

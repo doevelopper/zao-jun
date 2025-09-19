@@ -110,7 +110,16 @@ def check_cert_policy(services: list[dict]) -> tuple[list[str], list[str]]:
 
 
 def build_homepage_preview(domains: list[dict], services: list[dict]):
-    domain_index = {d.get("name"): {"name": d.get("name"), "services": []} for d in domains}
+    domain_index = {
+        d.get("name"): {
+            "name": d.get("name"),
+            "services": [],
+            "color": d.get("color"),
+            "icon": d.get("icon"),
+            "logo": d.get("logo"),
+        }
+        for d in domains
+    }
     for s in services:
         dom = s.get("domain")
         item = {
