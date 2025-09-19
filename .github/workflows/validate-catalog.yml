@@ -48,6 +48,22 @@ jobs:
             specs/001-modular-container-platform/catalog/homepage-preview.json \
             --output specs/001-modular-container-platform/catalog/homepage.html
 
+      - name: Write job summary
+        run: |
+          echo "## Catalog validation summary" >> $GITHUB_STEP_SUMMARY
+          python - <<'PY'
+import json
+data = json.load(open('validation-output.json'))
+domains = data.get('domains', 0)
+services = data.get('services', 0)
+warnings = data.get('warnings', [])
+ok = data.get('ok', False)
+print(f"Status: {'✅ OK' if ok else '❌ Failed'}")
+print(f"Domains: {domains}")
+print(f"Services: {services}")
+print(f"Warnings: {len(warnings)}")
+PY
+
       - name: Upload validation outputs
         uses: actions/upload-artifact@v4
         with:
@@ -56,3 +72,68 @@ jobs:
             validation-output.json
             specs/001-modular-container-platform/catalog/homepage-preview.json
             specs/001-modular-container-platform/catalog/homepage.html
+
+      - name: Comment on PR with validation summary
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const marker = '<!-- catalog-validation-comment -->';
+            let body = '';
+            try {
+              const data = JSON.parse(fs.readFileSync('validation-output.json', 'utf-8'));
+              const ok = !!data.ok;
+              const domains = data.domains ?? 0;
+              const services = data.services ?? 0;
+              const warnings = Array.isArray(data.warnings) ? data.warnings : [];
+              body += `## Catalog validation\n`;
+              body += `- Status: ${ok ? '✅ OK' : '❌ Failed'}\n`;
+              body += `- Domains: ${domains}\n`;
+              body += `- Services: ${services}\n`;
+              body += `- Warnings: ${warnings.length}\n`;
+              if (warnings.length) {
+                body += `\n<details><summary>Warnings</summary>\n\n`;
+                body += warnings.map(w => `- ${w}`).join('\n');
+                body += `\n</details>\n`;
+              }
+              body += `\nArtifacts:\n- catalog-validation (contains homepage preview JSON and HTML)\n`;
+            } catch (e) {
+              body = `Catalog validation: could not read validation-output.json: ${e}`;
+            }
+            body = marker + '\n' + body;
+            const prNumber = context.issue.number;
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+            const existing = comments.find(c => c.user?.type === 'Bot' && c.body && c.body.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body,
+              });
+            }
+
+      - name: Enforce zero warnings on protected branches
+        if: github.event_name == 'pull_request' && (github.event.pull_request.base.ref == 'main' || github.event.pull_request.base.ref == 'master' || startsWith(github.event.pull_request.base.ref, 'release/'))
+        run: |
+          python - <<'PY'
+import json, sys
+data = json.load(open('validation-output.json'))
+warnings = data.get('warnings', [])
+if warnings:
+  print(f"Failing due to {len(warnings)} warnings on protected base branch")
+  sys.exit(1)
+print("No warnings on protected base branch; proceeding")
+PY
