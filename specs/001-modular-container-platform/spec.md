@@ -64,11 +64,11 @@ As a platform/operations engineer, I want to onboard and expose new internal ser
 4. Given multiple services across domains, When end users browse the homepage, Then they can discover and navigate to services organized by domain without knowing internal addresses.
 
 ### Edge Cases
-- Conflicting routes or duplicate service names should be detected and surfaced before activation with clear resolution guidance. [NEEDS CLARIFICATION: conflict resolution policy]
-- A service reporting unhealthy status should not be listed as available; its homepage entry should indicate degraded status with details. [NEEDS CLARIFICATION: display behavior]
-- Invalid or missing TLS certificates should prevent exposure of affected endpoints while other services remain available. [NEEDS CLARIFICATION: certificate sourcing/renewal process]
-- Attempted direct port exposure by a service owner must be blocked and logged with an audit event. [NEEDS CLARIFICATION: enforcement and alerting]
-- Large numbers of services should not materially degrade navigation or discovery. [NEEDS CLARIFICATION: maximum expected scale]
+- Conflicting routes or duplicate service names should be detected and surfaced before activation with clear resolution guidance. Resolution policy: reject the onboarding/change with an actionable error; service names and routes MUST be unique. Conflicts require the submitter to modify metadata; no implicit overrides or priorities.
+- A service reporting unhealthy status should not be listed as available; its homepage entry should indicate degraded status with details. Display policy: show the service with a "Unavailable" status badge and a tooltip/reason; the link is disabled until healthy.
+- Invalid or missing TLS certificates should prevent exposure of affected endpoints while other services remain available. Certificate policy: withhold exposure for the affected service, emit an audit event, and continue serving healthy, valid endpoints.
+- Attempted direct port exposure by a service owner must be blocked and logged with an audit event. Enforcement/alerting: block the change, record an audit event, and notify platform admins via the standard alert channel.
+- Large numbers of services should not materially degrade navigation or discovery. Scale target: support up to ~100 concurrently exposed services with responsive navigation (<1s homepage render) on a single host; beyond that, pagination/grouping is required.
 
 ## Requirements (mandatory)
 
@@ -81,20 +81,20 @@ As a platform/operations engineer, I want to onboard and expose new internal ser
 - FR-006: The platform MUST provide a status homepage showing each service, its reachability state, and a link to access it.
 - FR-007: The platform MUST record audit events for changes to service exposure (create, update, remove) and policy violations.
 - FR-008: The platform MUST include health checks so unresponsive services are not advertised as healthy.
-- FR-009: The platform MUST support both organization-approved certificates and developer self-signed certificates in non-production contexts. [NEEDS CLARIFICATION: environments where self-signed is permitted]
+- FR-009: The platform MUST support both organization-approved certificates and developer self-signed certificates in non-production contexts. Self-signed certificates are permitted only in development and lab/staging environments on isolated networks; production requires organization-approved (internal PKI or CA-signed) certificates.
 - FR-010: The platform MUST provide standardized templates and documentation for onboarding new services.
 - FR-011: The platform MUST validate configuration at onboarding and reject invalid or conflicting definitions with actionable errors.
 - FR-012: The platform MUST allow configuration rollback when a change causes service unavailability.
-- FR-013: The platform SHOULD expose centralized logs and be ready for metrics collection to support observability. [NEEDS CLARIFICATION: logging/metrics scope]
-- FR-014: The platform SHOULD support domain-based access control to restrict who can reach certain service groups. [NEEDS CLARIFICATION: authn/authz model]
-- FR-015: The platform SHOULD provide automated update capabilities for platform-managed services with safe rollout. [NEEDS CLARIFICATION: update policy]
+- FR-013: The platform SHOULD expose centralized logs and be ready for metrics collection to support observability. Scope: structured application and access logs aggregated centrally with a minimum 14-day retention (90 days recommended), and system/service metrics collected at ≤60s intervals with basic dashboards (availability, latency, error rates, resource usage).
+- FR-014: The platform SHOULD support domain-based access control to restrict who can reach certain service groups. Model: authentication via the organization identity provider (single sign-on) and authorization via role- and group-based access mapped to domains (e.g., Admin, Service Owner, Viewer).
+- FR-015: The platform SHOULD provide automated update capabilities for platform-managed services with safe rollout. Update policy: auto-apply non-breaking updates in non-production during maintenance windows; production updates require change approval and a scheduled window with health verification and immediate rollback on failure.
 
 ### Key Entities (include if feature involves data)
 - Service: A unit to be exposed via the platform with metadata (name, domain, routes, health, visibility).
 - Domain: A logical grouping for services used for organization, navigation, and access control.
 - Route: A mapping rule from the entry point to a target service endpoint; validated for uniqueness and safety.
 - Homepage Entry: The navigable representation of a service (name, icon/label, status, link) on the platform homepage.
-- User Type: Roles interacting with the platform (e.g., Platform Admin, Service Owner, Viewer). [NEEDS CLARIFICATION: exact roles and permissions]
+- User Type: Roles interacting with the platform (Platform Admin, Service Owner, Viewer). Platform Admin: full platform configuration, approval of production changes, access to all domains and audit logs. Service Owner: create/update/remove services within assigned domains, view audit entries for owned services. Viewer: read-only access to the homepage and permitted domains.
 - Audit Event: An immutable record of configuration changes and policy enforcement outcomes.
 
 ---
@@ -109,7 +109,7 @@ GATE: Automated checks run during main() execution
 - [x] All mandatory sections completed
 
 ### Requirement Completeness
-- [ ] No [NEEDS CLARIFICATION] markers remain
+- [x] No [NEEDS CLARIFICATION] markers remain
 - [x] Requirements are testable and unambiguous  
 - [x] Success criteria are measurable
 - [x] Scope is clearly bounded
