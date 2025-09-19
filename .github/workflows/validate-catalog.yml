@@ -31,6 +31,10 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Run unit tests
+        run: |
+          pytest -q
+
       - name: Validate catalog and generate homepage preview
         run: |
           set -euo pipefail
@@ -97,7 +101,29 @@ PY
                 body += warnings.map(w => `- ${w}`).join('\n');
                 body += `\n</details>\n`;
               }
-              body += `\nArtifacts:\n- catalog-validation (contains homepage preview JSON and HTML)\n`;
+              // Add artifact deep links
+              const runId = process.env.GITHUB_RUN_ID;
+              const owner = context.repo.owner;
+              const repo = context.repo.repo;
+              const runUrl = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
+              try {
+                const { data: artifacts } = await github.rest.actions.listWorkflowRunArtifacts({
+                  owner,
+                  repo,
+                  run_id: Number(runId),
+                  per_page: 100,
+                });
+                const catalogArtifact = artifacts.artifacts.find(a => a.name === 'catalog-validation');
+                if (catalogArtifact) {
+                  body += `\nArtifacts:\n`;
+                  body += `- [catalog-validation.zip](${catalogArtifact.archive_download_url}) — contains homepage preview JSON and HTML\n`;
+                } else {
+                  body += `\nArtifacts: (not found via API)\n`;
+                }
+              } catch (e) {
+                body += `\nArtifacts: could not list artifacts (${e})\n`;
+              }
+              body += `\nView all artifacts: ${runUrl}\n`;
             } catch (e) {
               body = `Catalog validation: could not read validation-output.json: ${e}`;
             }

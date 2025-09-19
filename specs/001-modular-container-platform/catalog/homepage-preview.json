@@ -9,6 +9,9 @@
         "link": "https://home.local/",
         "link_enabled": true
       }
-    ]
+    ],
+    "color": "#22c55e",
+    "icon": "\ud83e\udded",
+    "logo": null
   }
 ]
