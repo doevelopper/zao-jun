@@ -1,0 +1,53 @@
+
+<!doctype html>
+<html lang=en>
+<head>
+  <meta charset=utf-8>
+  <meta name=viewport content="width=device-width, initial-scale=1">
+  <title>Zao-Jun Homepage</title>
+  <style>
+    :root { --bg:#0b1020; --fg:#e5e7eb; --muted:#9ca3af; --card:#111827; --grid:repeat(auto-fill,minmax(220px,1fr)); }
+    html,body { margin:0; padding:0; background:var(--bg); color:var(--fg); font-family:system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    header { padding:24px 32px; border-bottom:1px solid #1f2937; position:sticky; top:0; background:rgba(11,16,32,.9); backdrop-filter: blur(6px); }
+    h1 { margin:0; font-size:20px; letter-spacing:.02em; }
+    main { padding:24px 32px; max-width:1200px; margin:0 auto; }
+    h2 { margin:24px 0 12px; font-size:16px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+    .grid { display:grid; grid-template-columns: var(--grid); gap:16px; }
+    .card { background:var(--card); border:1px solid #1f2937; border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
+    .card-header { display:flex; align-items:center; justify-content:space-between; padding:12px 14px; border-bottom:1px solid #1f2937; }
+    .name { font-weight:600; }
+    .badge { color:#0b1020; font-size:12px; padding:2px 8px; border-radius:999px; text-transform:capitalize; }
+    .card-body { padding:12px 14px; }
+    .btn { display:inline-block; background:#2563eb; color:white; text-decoration:none; padding:8px 10px; border-radius:8px; font-weight:600; }
+    footer { padding:24px 32px; color:var(--muted); border-top:1px solid #1f2937; margin-top:24px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Zao-Jun — Services</h1>
+  </header>
+  <main>
+    
+        <section class=domain>
+          <h2>core</h2>
+          <div class=grid>
+            
+        <div class=card>
+          <div class=card-header>
+            <span class=name>homepage</span>
+            <span class=badge style="background:#22c55e">healthy</span>
+          </div>
+          <div class=card-body>
+            <div class=link><a href="https://home.local/" class="btn" style="opacity:1.0" >Open</a></div>
+          </div>
+        </div>
+        
+          </div>
+        </section>
+        
+  </main>
+  <footer>
+    Generated from homepage-preview.json
+  </footer>
+</body>
+</html>

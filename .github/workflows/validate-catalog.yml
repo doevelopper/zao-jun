@@ -41,6 +41,13 @@ jobs:
             --output specs/001-modular-container-platform/catalog/homepage-preview.json \
             | tee validation-output.json
 
+      - name: Generate static homepage from preview
+        run: |
+          set -euo pipefail
+          python src/cli/generate_homepage.py \
+            specs/001-modular-container-platform/catalog/homepage-preview.json \
+            --output specs/001-modular-container-platform/catalog/homepage.html
+
       - name: Upload validation outputs
         uses: actions/upload-artifact@v4
         with:
@@ -48,3 +55,4 @@ jobs:
           path: |
             validation-output.json
             specs/001-modular-container-platform/catalog/homepage-preview.json
+            specs/001-modular-container-platform/catalog/homepage.html

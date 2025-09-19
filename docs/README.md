@@ -12,3 +12,9 @@ Quick links to planning and design artifacts for the Modular Container Platform.
 
 Constitution:
 - .specify/memory/constitution.md
+
+## Generate Homepage (Preview)
+1) Create preview JSON (CI does this automatically):
+	- src/cli/validate_catalog.py specs/001-modular-container-platform/catalog --homepage-preview --output specs/001-modular-container-platform/catalog/homepage-preview.json
+2) Render HTML:
+	- src/cli/generate_homepage.py specs/001-modular-container-platform/catalog/homepage-preview.json --output specs/001-modular-container-platform/catalog/homepage.html
