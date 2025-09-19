@@ -1,0 +1,20 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "urn:zao-jun:models:domain"
+title: Domain
+description: Domain grouping for services
+type: object
+additionalProperties: false
+required:
+  - name
+properties:
+  name:
+    type: string
+    minLength: 1
+    description: Unique domain name
+  description:
+    type: string
+  accessGroups:
+    type: array
+    items:
+      type: string
+    description: Authorization groups with access to this domain

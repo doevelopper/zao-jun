@@ -1,0 +1,16 @@
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "urn:zao-jun:models:route"
+title: Route
+description: Mapping rule from entry point to target service endpoint
+type: object
+additionalProperties: false
+required:
+  - rule
+properties:
+  rule:
+    type: string
+    minLength: 1
+    description: Host/path expression; must be unique platform-wide
+  enabled:
+    type: boolean
+    default: true
