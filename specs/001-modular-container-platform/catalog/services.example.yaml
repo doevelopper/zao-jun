@@ -7,3 +7,8 @@ health: healthy
 visibility: public
 metadata:
   owner: platform-team
+  cert_env: dev
+  cert_type: self-signed
+  cert_valid: "true"
+  cert_chain_complete: "true"
+  cert_expired: "false"
