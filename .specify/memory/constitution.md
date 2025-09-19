@@ -1,50 +1,86 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# Zao-Jun Platform Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Single Secure Entry Point (Zero-Trust Edge)
+All external traffic MUST pass through a single entry point with TLS termination. No service may expose host ports directly. This ensures consistent policy enforcement, auditability, and blast-radius reduction.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Metadata-Driven Service Exposure
+Service discovery and routing are declarative. Services declare name, domain grouping, and route rules via metadata. Manual routing edits are prohibited; conflicts are rejected with actionable errors.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. 10-Minute Onboarding Standard
+Onboarding a new service from template to live exposure MUST be achievable in under 10 minutes for a trained user. Templates and documentation are mandatory and kept current.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Domain-Oriented Organization
+Services are organized by domain for navigation and access policies. The homepage reflects domain groupings and surfaces service health and entry links.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. No Direct Port Exposure
+Only the platform’s edge may bind externally. Any attempt to expose container ports directly is blocked, logged as an audit event, and flagged to platform administrators.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+### VI. Observability by Default
+Structured logs and basic metrics are mandatory. Centralized logging retains at least 14 days (90 days recommended). Metrics are collected at ≤60s intervals with dashboards for availability, latency, error rates, and resource usage.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### VII. Safety, Validation, and Rollback
+All changes are validated before activation. Conflicting or invalid definitions are rejected. Rollback MUST be available to restore prior working configurations if a change degrades availability.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+### VIII. Certificates Policy
+Production endpoints require organization-approved certificates (internal PKI or CA-signed). Self-signed certificates are permitted only in development and lab/staging on isolated networks. Endpoints with invalid/missing certificates are withheld from exposure and audited.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### IX. Access Control and Least Privilege
+Access is governed by roles and groups mapped to domains. Platform Admins have full control; Service Owners manage services within assigned domains; Viewers have read-only access. Principle of least privilege applies to all operations.
+
+### X. Simplicity and Scope Discipline
+Prefer the simplest approach that satisfies requirements. Avoid premature optimization and unnecessary coupling. The platform’s scope is service exposure, organization, and observability readiness—not bespoke service configuration.
+
+## Security & Performance Standards
+
+### Security Requirements
+- Zero direct port exposure from services to the host.
+- Centralized TLS termination; per-service policies enforced at the edge.
+- Audit events recorded for create/update/remove, policy violations, and certificate issues.
+- Authentication via organization SSO; authorization via RBAC/GBAC mapped to domains.
+
+### Certificate Handling
+- Production: internal PKI or CA-signed certificates only.
+- Non-production: self-signed allowed on isolated networks.
+- Invalid/missing certificates: block exposure for the affected endpoint and emit audit events.
+
+### Performance Targets
+- Homepage renders in <1s with up to ~100 exposed services on a single host.
+- Routing/discovery updates propagate without manual restarts.
+- Onboarding time: <10 minutes from template to live exposure for a trained user.
+
+### Reliability & Recovery
+- Health checks determine service availability; unhealthy services are not advertised as available.
+- Rollback available for configuration changes causing unavailability.
+- Platform components restart automatically on failure to maintain availability.
+
+## Development Workflow & Quality Gates
+
+### Workflow
+1. Specify: Feature specs state user value and constraints (no implementation details).
+2. Plan: Tasks and acceptance criteria derived from the spec.
+3. Implement: Changes adhere to principles and pass quality gates.
+
+### Review Process
+- Specs must include user scenarios, functional requirements, and clear boundaries.
+- All routes and service names must be unique; conflicts are rejected.
+- Security checks: no host port exposure; certificate policy compliance; RBAC mappings in place.
+- Observability checks: structured logs and metrics enabled for new/changed services.
+
+### Quality Gates (Non-Negotiable)
+- Single entry point enforced; no direct ports.
+- Metadata validation passes with no unresolved conflicts.
+- Audit logging enabled for relevant actions.
+- Rollback procedure documented and verifiable.
+- Documentation updated: templates, onboarding guide, and homepage listing.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- This Constitution supersedes other project practices when conflicts arise.
+- Amendments require: written proposal, review approval by Platform Admins, documented migration/rollback plan, and updated version/date.
+- All pull requests must certify compliance with Core Principles and Quality Gates.
+- Complexity must be justified against Simplicity and Scope Discipline.
+- Use this Constitution as the single source of truth for platform rules and expectations.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2025-09-19 | **Last Amended**: 2025-09-19
