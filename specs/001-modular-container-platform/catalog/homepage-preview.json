@@ -109,5 +109,257 @@
     "color": "#06b6d4",
     "icon": "\ud83d\udcc8",
     "logo": null
+  },
+  {
+    "name": "automation",
+    "services": [
+      {
+        "name": "n8n",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://n8n.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "drawio",
+        "status": "healthy",
+        "visibility": "public",
+        "link": "https://drawio.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "memos",
+        "status": "healthy",
+        "visibility": "public",
+        "link": "https://memos.local/",
+        "link_enabled": true
+      }
+    ],
+    "color": "#f97316",
+    "icon": "\ud83e\udd16",
+    "logo": null
+  },
+  {
+    "name": "database",
+    "services": [
+      {
+        "name": "postgresql",
+        "status": "degraded",
+        "visibility": "restricted",
+        "link": "https://pgadmin.local/",
+        "link_enabled": false
+      },
+      {
+        "name": "rabbitmq",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://rabbit.local/",
+        "link_enabled": true
+      }
+    ],
+    "color": "#0ea5e9",
+    "icon": "\ud83d\udee2\ufe0f",
+    "logo": null
+  },
+  {
+    "name": "dashboard",
+    "services": [
+      {
+        "name": "grafana",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://grafana.local/",
+        "link_enabled": true
+      }
+    ],
+    "color": "#38bdf8",
+    "icon": "\ud83d\udcca",
+    "logo": null
+  },
+  {
+    "name": "ai",
+    "services": [
+      {
+        "name": "ollama",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://ollama.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "open-webui",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://openwebui.local/",
+        "link_enabled": true
+      }
+    ],
+    "color": "#9333ea",
+    "icon": "\ud83e\udde0",
+    "logo": null
+  },
+  {
+    "name": "sdlc",
+    "services": [
+      {
+        "name": "youtrack",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://youtrack.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "hub",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://jetbrains-hub.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "qodana-python",
+        "status": "degraded",
+        "visibility": "restricted",
+        "link": "https://qodana-python.local/",
+        "link_enabled": false
+      },
+      {
+        "name": "qodana",
+        "status": "degraded",
+        "visibility": "restricted",
+        "link": "https://qodana.local/",
+        "link_enabled": false
+      },
+      {
+        "name": "qodana-clang",
+        "status": "degraded",
+        "visibility": "restricted",
+        "link": "https://qodana-clang.local/",
+        "link_enabled": false
+      },
+      {
+        "name": "qodana-cpp",
+        "status": "degraded",
+        "visibility": "restricted",
+        "link": "https://qodana-cpp.local/",
+        "link_enabled": false
+      }
+    ],
+    "color": "#10b981",
+    "icon": "\ud83e\uddea",
+    "logo": null
+  },
+  {
+    "name": "qlm",
+    "services": [
+      {
+        "name": "atlassian-mcp",
+        "status": "unavailable",
+        "visibility": "restricted",
+        "link": "https://mcp.local/",
+        "link_enabled": false
+      },
+      {
+        "name": "confluence",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://confluence.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "crucible",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://crucible.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "fisheye",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://fisheye.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "jira-core",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://jira-core.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "jira-software",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://jira.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "bitbucket-server",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://bitbucket.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "atlassian-nfs",
+        "status": "degraded",
+        "visibility": "restricted",
+        "link": "https://nfs.local/",
+        "link_enabled": false
+      }
+    ],
+    "color": "#eab308",
+    "icon": "\ud83d\udcda",
+    "logo": null
+  },
+  {
+    "name": "dev",
+    "services": [
+      {
+        "name": "playwright-python",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://playwright.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "vscode-devcontainers",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://devcontainers.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "devcontainers-anaconda",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://anaconda.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "hedgedoc",
+        "status": "healthy",
+        "visibility": "public",
+        "link": "https://hedgedoc.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "searxng",
+        "status": "healthy",
+        "visibility": "public",
+        "link": "https://searxng.local/",
+        "link_enabled": true
+      },
+      {
+        "name": "vaultwarden",
+        "status": "healthy",
+        "visibility": "restricted",
+        "link": "https://vaultwarden.local/",
+        "link_enabled": true
+      }
+    ],
+    "color": "#1d4ed8",
+    "icon": "\ud83d\udcbb",
+    "logo": null
   }
 ]

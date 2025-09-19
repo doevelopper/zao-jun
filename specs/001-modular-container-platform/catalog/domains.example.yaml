@@ -49,3 +49,66 @@
     - platform-operators
   color: "#06b6d4"
   icon: "📈"
+
+- name: automation
+  description: Automation and workflows
+  accessGroups:
+    - platform-admins
+    - platform-operators
+    - developers
+  color: "#f97316"
+  icon: "🤖"
+
+- name: database
+  description: Databases and messaging
+  accessGroups:
+    - platform-admins
+    - platform-operators
+    - dba
+  color: "#0ea5e9"
+  icon: "🛢️"
+
+- name: dashboard
+  description: Dashboards and observability UIs
+  accessGroups:
+    - platform-admins
+    - platform-operators
+    - developers
+  color: "#38bdf8"
+  icon: "📊"
+
+- name: ai
+  description: AI services and tooling
+  accessGroups:
+    - platform-admins
+    - platform-operators
+    - developers
+  color: "#9333ea"
+  icon: "🧠"
+
+- name: sdlc
+  description: SDLC and code quality
+  accessGroups:
+    - platform-admins
+    - platform-operators
+    - developers
+  color: "#10b981"
+  icon: "🧪"
+
+- name: qlm
+  description: Atlassian and lifecycle management
+  accessGroups:
+    - platform-admins
+    - platform-operators
+    - developers
+  color: "#eab308"
+  icon: "📚"
+
+- name: dev
+  description: Developer environments and tools
+  accessGroups:
+    - platform-admins
+    - platform-operators
+    - developers
+  color: "#1d4ed8"
+  icon: "💻"

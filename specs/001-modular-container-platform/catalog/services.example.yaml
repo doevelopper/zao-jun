@@ -124,3 +124,402 @@
     cert_valid: "true"
     cert_chain_complete: "true"
     cert_expired: "false"
+
+# Automation
+- name: n8n
+  domain: automation
+  routes:
+    - rule: Host(`n8n.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: automation
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: drawio
+  domain: automation
+  routes:
+    - rule: Host(`drawio.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: public
+  metadata:
+    owner: automation
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: memos
+  domain: automation
+  routes:
+    - rule: Host(`memos.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: public
+  metadata:
+    owner: automation
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+# Database
+- name: postgresql
+  domain: database
+  routes:
+    - rule: Host(`pgadmin.local`) && PathPrefix(`/`)
+  health: degraded
+  visibility: restricted
+  metadata:
+    owner: dba
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: rabbitmq
+  domain: database
+  routes:
+    - rule: Host(`rabbit.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: dba
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+# Dashboard
+- name: grafana
+  domain: dashboard
+  routes:
+    - rule: Host(`grafana.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: sre
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+# AI
+- name: ollama
+  domain: ai
+  routes:
+    - rule: Host(`ollama.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: ai
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: open-webui
+  domain: ai
+  routes:
+    - rule: Host(`openwebui.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: ai
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+# SDLC
+- name: youtrack
+  domain: sdlc
+  routes:
+    - rule: Host(`youtrack.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: sdlc
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: hub
+  domain: sdlc
+  routes:
+    - rule: Host(`jetbrains-hub.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: sdlc
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: qodana-python
+  domain: sdlc
+  routes:
+    - rule: Host(`qodana-python.local`) && PathPrefix(`/`)
+  health: degraded
+  visibility: restricted
+  metadata:
+    owner: sdlc
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: qodana
+  domain: sdlc
+  routes:
+    - rule: Host(`qodana.local`) && PathPrefix(`/`)
+  health: degraded
+  visibility: restricted
+  metadata:
+    owner: sdlc
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: qodana-clang
+  domain: sdlc
+  routes:
+    - rule: Host(`qodana-clang.local`) && PathPrefix(`/`)
+  health: degraded
+  visibility: restricted
+  metadata:
+    owner: sdlc
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: qodana-cpp
+  domain: sdlc
+  routes:
+    - rule: Host(`qodana-cpp.local`) && PathPrefix(`/`)
+  health: degraded
+  visibility: restricted
+  metadata:
+    owner: sdlc
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+# QLM (Atlassian)
+- name: atlassian-mcp
+  domain: qlm
+  routes:
+    - rule: Host(`mcp.local`) && PathPrefix(`/`)
+  health: unavailable
+  visibility: restricted
+  metadata:
+    owner: qlm
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: confluence
+  domain: qlm
+  routes:
+    - rule: Host(`confluence.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: qlm
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: crucible
+  domain: qlm
+  routes:
+    - rule: Host(`crucible.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: qlm
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: fisheye
+  domain: qlm
+  routes:
+    - rule: Host(`fisheye.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: qlm
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: jira-core
+  domain: qlm
+  routes:
+    - rule: Host(`jira-core.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: qlm
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: jira-software
+  domain: qlm
+  routes:
+    - rule: Host(`jira.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: qlm
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: bitbucket-server
+  domain: qlm
+  routes:
+    - rule: Host(`bitbucket.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: qlm
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: atlassian-nfs
+  domain: qlm
+  routes:
+    - rule: Host(`nfs.local`) && PathPrefix(`/`)
+  health: degraded
+  visibility: restricted
+  metadata:
+    owner: qlm
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+# Dev
+- name: playwright-python
+  domain: dev
+  routes:
+    - rule: Host(`playwright.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: devexp
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: vscode-devcontainers
+  domain: dev
+  routes:
+    - rule: Host(`devcontainers.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: devexp
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: devcontainers-anaconda
+  domain: dev
+  routes:
+    - rule: Host(`anaconda.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: devexp
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: hedgedoc
+  domain: dev
+  routes:
+    - rule: Host(`hedgedoc.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: public
+  metadata:
+    owner: devexp
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: searxng
+  domain: dev
+  routes:
+    - rule: Host(`searxng.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: public
+  metadata:
+    owner: devexp
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
+
+- name: vaultwarden
+  domain: dev
+  routes:
+    - rule: Host(`vaultwarden.local`) && PathPrefix(`/`)
+  health: healthy
+  visibility: restricted
+  metadata:
+    owner: devexp
+    cert_env: dev
+    cert_type: self-signed
+    cert_valid: "true"
+    cert_chain_complete: "true"
+    cert_expired: "false"
