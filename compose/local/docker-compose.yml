@@ -111,6 +111,132 @@ services:
     security_opt:
       - no-new-privileges:true
 
+  # ---- Atlassian Suite (QLM) ----
+  confluence:
+    image: atlassian/confluence-server
+    environment:
+      - JVM_MINIMUM_MEMORY=1024m
+      - JVM_MAXIMUM_MEMORY=2048m
+    volumes:
+      - ./data/confluence:/var/atlassian/application-data/confluence
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.confluence.rule=Host(`confluence.local`)
+      - traefik.http.routers.confluence.entrypoints=websecure
+      - traefik.http.routers.confluence.tls=true
+      - traefik.http.routers.confluence.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.confluence.loadbalancer.server.port=8090
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  jira_core:
+    image: atlassian/jira-core
+    environment:
+      - JVM_MINIMUM_MEMORY=1024m
+      - JVM_MAXIMUM_MEMORY=2048m
+    volumes:
+      - ./data/jira-core:/var/atlassian/application-data/jira
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jira-core.rule=Host(`jira-core.local`)
+      - traefik.http.routers.jira-core.entrypoints=websecure
+      - traefik.http.routers.jira-core.tls=true
+      - traefik.http.routers.jira-core.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.jira-core.loadbalancer.server.port=8080
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  jira:
+    image: atlassian/jira-software
+    environment:
+      - JVM_MINIMUM_MEMORY=1024m
+      - JVM_MAXIMUM_MEMORY=2048m
+    volumes:
+      - ./data/jira-software:/var/atlassian/application-data/jira
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.jira.rule=Host(`jira.local`)
+      - traefik.http.routers.jira.entrypoints=websecure
+      - traefik.http.routers.jira.tls=true
+      - traefik.http.routers.jira.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.jira.loadbalancer.server.port=8080
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  bitbucket:
+    image: atlassian/bitbucket-server
+    environment:
+      - JVM_MINIMUM_MEMORY=1024m
+      - JVM_MAXIMUM_MEMORY=2048m
+    volumes:
+      - ./data/bitbucket:/var/atlassian/application-data/bitbucket
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.bitbucket.rule=Host(`bitbucket.local`)
+      - traefik.http.routers.bitbucket.entrypoints=websecure
+      - traefik.http.routers.bitbucket.tls=true
+      - traefik.http.routers.bitbucket.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.bitbucket.loadbalancer.server.port=7990
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  crucible:
+    image: atlassian/crucible
+    volumes:
+      - ./data/crucible:/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.crucible.rule=Host(`crucible.local`)
+      - traefik.http.routers.crucible.entrypoints=websecure
+      - traefik.http.routers.crucible.tls=true
+      - traefik.http.routers.crucible.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.crucible.loadbalancer.server.port=8060
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  fisheye:
+    image: atlassian/fisheye
+    volumes:
+      - ./data/fisheye:/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.fisheye.rule=Host(`fisheye.local`)
+      - traefik.http.routers.fisheye.entrypoints=websecure
+      - traefik.http.routers.fisheye.tls=true
+      - traefik.http.routers.fisheye.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.fisheye.loadbalancer.server.port=8060
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  mcp:
+    image: mcp/atlassian
+    # TODO: confirm the correct image and app port for this meta service
+    volumes:
+      - ./data/atlassian-mcp:/var/opt/atlassian-mcp
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.mcp.rule=Host(`mcp.local`)
+      - traefik.http.routers.mcp.entrypoints=websecure
+      - traefik.http.routers.mcp.tls=true
+      - traefik.http.routers.mcp.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.mcp.loadbalancer.server.port=8080
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  atlassian_nfs:
+    image: atlassian/nfs-server-test
+    # NFS is not HTTP; no Traefik labels by default. Keep as infra utility.
+    # If you really want an HTTP route (nfs.local), add a sidecar nginx.
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
   openwebui:
     image: ghcr.io/open-webui/open-webui:cuda
     depends_on:
