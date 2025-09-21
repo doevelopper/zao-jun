@@ -1,0 +1,38 @@
+# templates/basic-service/compose.yml.template
+services:
+  ${SERVICE_NAME}:
+    image: ${SERVICE_IMAGE}:${SERVICE_TAG:-latest}
+    container_name: ${SERVICE_NAME}
+    restart: unless-stopped
+    environment:
+      # Add your environment variables here
+      - ENV_VAR_1=value1
+      - ENV_VAR_2=value2
+    volumes:
+      # Add your volume mappings here
+      - ${SERVICE_NAME}_data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.${SERVICE_NAME}.rule=Host(\`${SERVICE_DOMAIN}\`)"
+      - "traefik.http.routers.${SERVICE_NAME}.entrypoints=websecure"
+      - "traefik.http.routers.${SERVICE_NAME}.tls.certresolver=letsencrypt"
+      - "traefik.http.services.${SERVICE_NAME}.loadbalancer.server.port=${SERVICE_PORT:-80}"
+      - "platform.domain=${PLATFORM_DOMAIN}"
+      - "platform.service=${SERVICE_NAME}"
+      - "platform.description=${SERVICE_DESCRIPTION}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${SERVICE_PORT:-80}/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - traefik
+
+volumes:
+  ${SERVICE_NAME}_data:
+    name: ${SERVICE_NAME}_data
+
+networks:
+  traefik:
+    external: true
+---    

@@ -1,0 +1,29 @@
+# domains/core/nginx/compose.yml
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    restart: unless-stopped
+    volumes:
+      - ./config/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./config/nginx/html:/usr/share/nginx/html:ro
+      - ./config/nginx/certs:/etc/nginx/certs:ro
+      - platform_logs:/var/log/nginx
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nginx.rule=Host(`platform.localhost`)"
+      - "traefik.http.routers.nginx.entrypoints=websecure"
+      - "traefik.http.routers.nginx.tls.certresolver=letsencrypt"
+      - "traefik.http.services.nginx.loadbalancer.server.port=80"
+      - "platform.domain=core"
+      - "platform.service=nginx"
+      - "platform.description=Platform Homepage and Edge Gateway"
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    depends_on:
+      - traefik
+
+---

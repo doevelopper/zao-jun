@@ -1,0 +1,23 @@
+# domains/data/redis/compose.yml
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass redis_secure_password
+    volumes:
+      - redis_data:/data
+      - platform_logs:/var/log/redis
+    labels:
+      - "platform.domain=data"
+      - "platform.service=redis"
+      - "platform.description=In-Memory Cache and Session Store"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+      - "127.0.0.1:6379:6379"  # Only accessible from localhost
+
+---

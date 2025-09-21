@@ -1,0 +1,147 @@
+# ROOT: compose.yml - Main orchestration file
+# This file defines the core platform infrastructure and shared networks
+
+networks:
+  traefik:
+    external: false
+    name: traefik
+  database:
+    external: false
+    name: database
+  internal:
+    external: false
+    name: internal
+
+volumes:
+  traefik_data:
+    name: traefik_data
+  nginx_data:
+    name: nginx_data
+  postgres_data:
+    name: postgres_data
+  redis_data:
+    name: redis_data
+  rabbitmq_data:
+    name: rabbitmq_data
+  platform_logs:
+    name: platform_logs
+
+services:
+  # Load Balancer / Reverse Proxy
+  traefik:
+    extends:
+      file: ./domains/core/traefik/compose.yml
+      service: traefik
+    networks:
+      - traefik
+      - internal
+
+  # Edge Gateway
+  nginx:
+    extends:
+      file: ./domains/core/nginx/compose.yml
+      service: nginx
+    networks:
+      - traefik
+    depends_on:
+      - traefik
+
+  # Container Updates
+  watchtower:
+    extends:
+      file: ./domains/core/watchtower/compose.yml
+      service: watchtower
+    networks:
+      - internal
+
+  # Health Monitoring
+  healthchecks:
+    extends:
+      file: ./domains/core/healthchecks/compose.yml
+      service: healthchecks
+    networks:
+      - traefik
+      - database
+    depends_on:
+      - postgresql
+
+  # Database Services
+  postgresql:
+    extends:
+      file: ./domains/data/postgresql/compose.yml
+      service: postgresql
+    networks:
+      - database
+
+  redis:
+    extends:
+      file: ./domains/data/redis/compose.yml
+      service: redis
+    networks:
+      - database
+
+  rabbitmq:
+    extends:
+      file: ./domains/data/rabbitmq/compose.yml
+      service: rabbitmq
+    networks:
+      - database
+      - traefik
+
+---
+
+# domains/core/traefik/compose.yml
+services:
+  traefik:
+    image: traefik:v3.1
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - "--api.dashboard=true"
+      - "--api.debug=true"
+      - "--log.level=INFO"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--providers.docker.network=traefik"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.file.watch=true"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+      - "--certificatesresolvers.letsencrypt.acme.email=admin@localhost"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--metrics.prometheus=true"
+      - "--accesslog=true"
+      - "--accesslog.filepath=/var/log/traefik/access.log"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik_data:/letsencrypt
+      - ./config/traefik/dynamic:/etc/traefik/dynamic:ro
+      - platform_logs:/var/log/traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.localhost`)"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$2y$$10$$8qkAP0B9AjQjK0xGw0Hq5uGHvJwE3UG5zEtN1wJnKr8vL.Lq9K8qK"
+      - "traefik.http.routers.traefik.middlewares=traefik-auth"
+      - "platform.domain=core"
+      - "platform.service=traefik"
+    environment:
+      - TRAEFIK_LOG_LEVEL=INFO
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+---
+
+
