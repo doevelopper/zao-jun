@@ -9,7 +9,7 @@ This is a minimal local docker-compose stack to try the single-entry approach us
 Add entries to /etc/hosts:
 
 ```
-127.0.0.1  home.local traefik.local whoami.local nginx.local fider.local hc.local ollama.local openwebui.local confluence.local jira.local jira-core.local bitbucket.local crucible.local fisheye.local mcp.local
+127.0.0.1  home.local traefik.local whoami.local nginx.local fider.local hc.local ollama.local openwebui.local confluence.local jira.local jira-core.local bitbucket.local crucible.local fisheye.local mcp.local youtrack.local jetbrains-hub.local qodana.local qodana-python.local qodana-clang.local qodana-cpp.local
 ```
 
 Optional: add more from your catalog, e.g. `grafana.local`, `n8n.local`, etc.
@@ -36,6 +36,19 @@ docker compose up -d
  - Crucible: https://crucible.local
  - Fisheye: https://fisheye.local
  - MCP (placeholder): https://mcp.local
+ - YouTrack: https://youtrack.local
+ - JetBrains Hub: https://jetbrains-hub.local
+ - Qodana (generic): https://qodana.local
+ - Qodana Python: https://qodana-python.local
+ - Qodana Clang: https://qodana-clang.local
+ - Qodana C++: https://qodana-cpp.local
+
+Qodana note: These services are placeholders and won’t start by default. Enable with the `qodana` profile and mount your project into `/data/project`, then replace the `command` with your desired Qodana run. Example:
+
+```
+docker compose --profile qodana up -d qodana_python
+# then exec into the container and run qodana CLI as needed
+```
 
 Note: Certificates are self-signed. Your browser will show a warning unless you trust them. For trusted local certs, consider mkcert, or wire real certificates.
 

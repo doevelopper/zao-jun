@@ -237,6 +237,115 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+
+  # ---- JetBrains SDLC ----
+  youtrack:
+    image: jetbrains/youtrack:latest
+    environment:
+      - YOUTRACK_JAVA_OPTS=-Xms1024m -Xmx2048m
+    volumes:
+      - ./data/youtrack:/opt/youtrack/data
+      - ./data/youtrack-logs:/opt/youtrack/logs
+      - ./data/youtrack-backups:/opt/youtrack/backups
+      - ./data/youtrack-conf:/opt/youtrack/conf
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.youtrack.rule=Host(`youtrack.local`)
+      - traefik.http.routers.youtrack.entrypoints=websecure
+      - traefik.http.routers.youtrack.tls=true
+      - traefik.http.routers.youtrack.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.youtrack.loadbalancer.server.port=8080
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  hub:
+    image: jetbrains/hub:latest
+    environment:
+      - HUB_JAVA_OPTS=-Xms1024m -Xmx2048m
+    volumes:
+      - ./data/hub:/opt/hub/data
+      - ./data/hub-logs:/opt/hub/logs
+      - ./data/hub-backups:/opt/hub/backups
+      - ./data/hub-conf:/opt/hub/conf
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hub.rule=Host(`jetbrains-hub.local`)
+      - traefik.http.routers.hub.entrypoints=websecure
+      - traefik.http.routers.hub.tls=true
+      - traefik.http.routers.hub.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.hub.loadbalancer.server.port=8080
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  # Windows containers only; not runnable on Linux Docker.
+  # youtrack_windows:
+  #   image: jetbrains/youtrack-windows:latest
+  #   profiles: ["windows"]
+  #   labels:
+  #     - traefik.enable=true
+  #     - traefik.http.routers.youtrackwin.rule=Host(`youtrack-win.local`)
+  #     - traefik.http.routers.youtrackwin.entrypoints=websecure
+  #     - traefik.http.routers.youtrackwin.tls=true
+
+  # Qodana placeholders (require project mounts and commands). Disabled by default via profiles.
+  qodana_python:
+    image: jetbrains/qodana-python:latest
+    profiles: ["qodana"]
+    # Replace command with actual Qodana invocation for your project
+    command: ["sleep", "infinity"]
+    volumes:
+      - ./data/qodana-python/project:/data/project
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.qodana-python.rule=Host(`qodana-python.local`)
+      - traefik.http.routers.qodana-python.entrypoints=websecure
+      - traefik.http.routers.qodana-python.tls=true
+      - traefik.http.routers.qodana-python.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.qodana-python.loadbalancer.server.port=8080
+
+  qodana_generic:
+    image: jetbrains/qodana:latest
+    profiles: ["qodana"]
+    command: ["sleep", "infinity"]
+    volumes:
+      - ./data/qodana/project:/data/project
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.qodana.rule=Host(`qodana.local`)
+      - traefik.http.routers.qodana.entrypoints=websecure
+      - traefik.http.routers.qodana.tls=true
+      - traefik.http.routers.qodana.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.qodana.loadbalancer.server.port=8080
+
+  qodana_clang:
+    image: jetbrains/qodana-clang:latest
+    profiles: ["qodana"]
+    command: ["sleep", "infinity"]
+    volumes:
+      - ./data/qodana-clang/project:/data/project
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.qodana-clang.rule=Host(`qodana-clang.local`)
+      - traefik.http.routers.qodana-clang.entrypoints=websecure
+      - traefik.http.routers.qodana-clang.tls=true
+      - traefik.http.routers.qodana-clang.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.qodana-clang.loadbalancer.server.port=8080
+
+  qodana_cpp:
+    image: jetbrains/qodana-cpp:latest
+    profiles: ["qodana"]
+    command: ["sleep", "infinity"]
+    volumes:
+      - ./data/qodana-cpp/project:/data/project
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.qodana-cpp.rule=Host(`qodana-cpp.local`)
+      - traefik.http.routers.qodana-cpp.entrypoints=websecure
+      - traefik.http.routers.qodana-cpp.tls=true
+      - traefik.http.routers.qodana-cpp.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.qodana-cpp.loadbalancer.server.port=8080
   openwebui:
     image: ghcr.io/open-webui/open-webui:cuda
     depends_on:
