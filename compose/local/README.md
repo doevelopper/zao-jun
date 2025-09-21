@@ -9,7 +9,7 @@ This is a minimal local docker-compose stack to try the single-entry approach us
 Add entries to /etc/hosts:
 
 ```
-127.0.0.1  home.local traefik.local whoami.local nginx.local fider.local hc.local ollama.local openwebui.local confluence.local jira.local jira-core.local bitbucket.local crucible.local fisheye.local mcp.local youtrack.local jetbrains-hub.local qodana.local qodana-python.local qodana-clang.local qodana-cpp.local
+127.0.0.1  home.local traefik.local whoami.local nginx.local fider.local hc.local ollama.local openwebui.local confluence.local jira.local jira-core.local bitbucket.local crucible.local fisheye.local mcp.local youtrack.local jetbrains-hub.local qodana.local qodana-python.local qodana-clang.local qodana-cpp.local n8n.local
 ```
 
 Optional: add more from your catalog, e.g. `grafana.local`, `n8n.local`, etc.
@@ -29,6 +29,7 @@ docker compose up -d
 - Healthchecks: https://hc.local
 - Ollama API: https://ollama.local
 - Open WebUI: https://openwebui.local
+ - n8n: https://n8n.local
  - Confluence: https://confluence.local
  - Jira Software: https://jira.local
  - Jira Core: https://jira-core.local
@@ -58,8 +59,19 @@ GPU note: The provided Open WebUI image tag is `:cuda` and supports GPU accelera
 
 - Ollama models/cache: `compose/local/data/ollama`
 - Open WebUI data: `compose/local/data/openwebui`
+ - Postgres data: `compose/local/data/postgres`
+ - n8n data: `compose/local/data/n8n`
 
 Note: Models can be large (several GB); ensure you have available disk. These paths are git-ignored.
+
+## Postgres defaults (dev only)
+
+- Host: postgres
+- Port: 5432
+- User/Password: `zaojun`/`zaojun`
+- DBs pre-created: `youtrack`, `hub`, `n8n`
+
+YouTrack and Hub are set to use the external Postgres; expect initial setup screens to confirm DB and admin user.
 
 ## Use generated homepage
 You can replace the placeholder content with your generated homepage:

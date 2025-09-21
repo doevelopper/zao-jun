@@ -34,6 +34,24 @@ services:
       - traefik.http.routers.api.middlewares=security-headers@file,compress@file,local-only@file
       - traefik.http.services.api.loadbalancer.server.port=8080
 
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=zaojun
+      - POSTGRES_PASSWORD=zaojun
+      - POSTGRES_DB=platform
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
   homepage:
     image: nginx:alpine
     volumes:
@@ -83,6 +101,37 @@ services:
       - traefik.http.routers.hc.entrypoints=websecure
       - traefik.http.routers.hc.tls=true
       - traefik.http.services.hc.loadbalancer.server.port=8000
+
+  n8n:
+    image: n8nio/n8n:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_SCHEMA=public
+      - DB_POSTGRESDB_USER=zaojun
+      - DB_POSTGRESDB_PASSWORD=zaojun
+      - N8N_HOST=n8n.local
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - N8N_SECURE_COOKIE=false
+      - GENERIC_TIMEZONE=UTC
+    volumes:
+      - ./data/n8n:/home/node/.n8n
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.n8n.rule=Host(`n8n.local`)
+      - traefik.http.routers.n8n.entrypoints=websecure
+      - traefik.http.routers.n8n.tls=true
+      - traefik.http.routers.n8n.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.n8n.loadbalancer.server.port=5678
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
 
   ollama:
     image: ollama/ollama:latest
@@ -241,8 +290,15 @@ services:
   # ---- JetBrains SDLC ----
   youtrack:
     image: jetbrains/youtrack:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       - YOUTRACK_JAVA_OPTS=-Xms1024m -Xmx2048m
+      # External PostgreSQL (dev defaults). You may still need to complete DB setup in the UI.
+      - YOUTRACK_DATABASE_URL=jdbc:postgresql://postgres:5432/youtrack
+      - YOUTRACK_DATABASE_USERNAME=zaojun
+      - YOUTRACK_DATABASE_PASSWORD=zaojun
     volumes:
       - ./data/youtrack:/opt/youtrack/data
       - ./data/youtrack-logs:/opt/youtrack/logs
@@ -261,8 +317,15 @@ services:
 
   hub:
     image: jetbrains/hub:latest
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
       - HUB_JAVA_OPTS=-Xms1024m -Xmx2048m
+      # External PostgreSQL (dev defaults). You may still need to complete DB setup in the UI.
+      - HUB_DATABASE_URL=jdbc:postgresql://postgres:5432/hub
+      - HUB_DATABASE_USERNAME=zaojun
+      - HUB_DATABASE_PASSWORD=zaojun
     volumes:
       - ./data/hub:/opt/hub/data
       - ./data/hub-logs:/opt/hub/logs
