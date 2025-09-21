@@ -433,6 +433,105 @@ services:
     volumes:
       - ./data/openwebui:/app/backend/data
 
+  # ---- Dev tools & utilities ----
+  playwright_python:
+    image: mcr.microsoft.com/playwright/python:latest
+    working_dir: /srv/site
+    command: ["python", "-m", "http.server", "8000"]
+    volumes:
+      - ./dev/playwright-site:/srv/site:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.playwright.rule=Host(`playwright.local`)
+      - traefik.http.routers.playwright.entrypoints=websecure
+      - traefik.http.routers.playwright.tls=true
+      - traefik.http.routers.playwright.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.playwright.loadbalancer.server.port=8000
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  devcontainers_anaconda:
+    image: mcr.microsoft.com/devcontainers/anaconda:latest
+    working_dir: /srv/site
+    command: ["python", "-m", "http.server", "8000"]
+    volumes:
+      - ./dev/anaconda-site:/srv/site:ro
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.anaconda.rule=Host(`anaconda.local`)
+      - traefik.http.routers.anaconda.entrypoints=websecure
+      - traefik.http.routers.anaconda.tls=true
+      - traefik.http.routers.anaconda.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.anaconda.loadbalancer.server.port=8000
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  vscode_devcontainers:
+    image: mcr.microsoft.com/devcontainers/base:debian
+    command: ["sleep", "infinity"]
+    # Non-HTTP utility container; no Traefik route by default.
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  hedgedoc:
+    image: lscr.io/linuxserver/hedgedoc:latest
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC
+      - CMD_DOMAIN=https://hedgedoc.local
+    volumes:
+      - ./data/hedgedoc:/config
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.hedgedoc.rule=Host(`hedgedoc.local`)
+      - traefik.http.routers.hedgedoc.entrypoints=websecure
+      - traefik.http.routers.hedgedoc.tls=true
+      - traefik.http.routers.hedgedoc.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.hedgedoc.loadbalancer.server.port=3000
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  searxng:
+    image: searxng/searxng:latest
+    environment:
+      - BASE_URL=https://searxng.local/
+      - INSTANCE_NAME=Zao-Jun SearXNG
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.searxng.rule=Host(`searxng.local`)
+      - traefik.http.routers.searxng.entrypoints=websecure
+      - traefik.http.routers.searxng.tls=true
+      - traefik.http.routers.searxng.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.searxng.loadbalancer.server.port=8080
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  vaultwarden:
+    image: vaultwarden/server:latest
+    environment:
+      - SIGNUPS_ALLOWED=false
+      - WEBSOCKET_ENABLED=true
+      - DOMAIN=https://vaultwarden.local
+      - ROCKET_PORT=80
+    volumes:
+      - ./data/vaultwarden:/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.vaultwarden.rule=Host(`vaultwarden.local`)
+      - traefik.http.routers.vaultwarden.entrypoints=websecure
+      - traefik.http.routers.vaultwarden.tls=true
+      - traefik.http.routers.vaultwarden.middlewares=security-headers@file,compress@file,rate-limit@file,local-only@file
+      - traefik.http.services.vaultwarden.loadbalancer.server.port=80
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
 networks:
   default:
     name: zaojun

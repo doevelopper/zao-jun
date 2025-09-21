@@ -9,7 +9,7 @@ This is a minimal local docker-compose stack to try the single-entry approach us
 Add entries to /etc/hosts:
 
 ```
-127.0.0.1  home.local traefik.local whoami.local nginx.local fider.local hc.local ollama.local openwebui.local confluence.local jira.local jira-core.local bitbucket.local crucible.local fisheye.local mcp.local youtrack.local jetbrains-hub.local qodana.local qodana-python.local qodana-clang.local qodana-cpp.local n8n.local
+127.0.0.1  home.local traefik.local whoami.local nginx.local fider.local hc.local ollama.local openwebui.local confluence.local jira.local jira-core.local bitbucket.local crucible.local fisheye.local mcp.local youtrack.local jetbrains-hub.local qodana.local qodana-python.local qodana-clang.local qodana-cpp.local n8n.local playwright.local anaconda.local hedgedoc.local searxng.local vaultwarden.local
 ```
 
 Optional: add more from your catalog, e.g. `grafana.local`, `n8n.local`, etc.
@@ -30,6 +30,11 @@ docker compose up -d
 - Ollama API: https://ollama.local
 - Open WebUI: https://openwebui.local
  - n8n: https://n8n.local
+ - Playwright Python demo: https://playwright.local
+ - Devcontainers Anaconda demo: https://anaconda.local
+ - HedgeDoc: https://hedgedoc.local
+ - SearXNG: https://searxng.local
+ - Vaultwarden: https://vaultwarden.local
  - Confluence: https://confluence.local
  - Jira Software: https://jira.local
  - Jira Core: https://jira-core.local
